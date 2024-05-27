@@ -1,10 +1,324 @@
-{% extends "_base.html" %}
- 
-{% block content %}
-      <h1 class="text-3xl text-blue-800">
-          GeeksforGeeks
-    </h1>
-      <h3 class="text-3x1 text-green-800">
-          GeeksforGeeks
-    </h3>
-{% endblock content %}
+{% extends "_base.html" %} {% block content %}
+<!-- Hero Section -->
+<section id="hero">
+  <!-- Flex Container -->
+  <div
+    class="container flex flex-col-reverse items-center px-6 mx-auto mt-10 space-y-0 md:space-y-0 md:flex-row"
+  >
+    <!-- Left item -->
+    <div class="flex flex-col mb-32 space-y-12 md:w-1/2">
+      <h1
+        class="max-w-md text-4xl font-bold text-center md:text-5xl md:text-left"
+      >
+        Pengenalan Wajah
+      </h1>
+      <p class="max-w-sm text-center text-darkGrayishBlue md:text-left">
+        Manage makes it simple for software teams to plan day-to-day tasks while
+        keeping the larger team goals in view.
+      </p>
+      <div class="flex justify-center md:justify-start">
+        <a
+          href="#"
+          class="p-3 px-6 pt-2 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight"
+          >Get Started</a
+        >
+      </div>
+    </div>
+    <!-- Image -->
+    <div class="md:w-1/2">
+      <img src="../static/img/illustration-intro.svg" alt="" />
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <!-- Flex container -->
+  <div
+    class="container flex flex-col px-4 mx-auto mt-10 space-y-12 md:space-y-0 md:flex-row"
+  >
+    <!-- What's Different -->
+    <div class="flex flex-col space-y-12 md:w-1/2">
+      <h2 class="max-w-md text-4xl font-bold text-center md:text-left">
+        Models
+      </h2>
+      <p class="max-w-sm text-center text-darkGrayishBlue md:text-left">
+        Manage provides all the functionality your team needs, without the
+        complexity. Our software is tailor-made for modern digital product
+        teams.
+      </p>
+    </div>
+
+    <!-- Numbered List -->
+    <div class="flex flex-col space-y-8 md:w-1/2">
+      <!-- List Item 1 -->
+      <div
+        class="flex flex-col space-y-3 md:space-y-0 md:space-x-6 md:flex-row"
+      >
+        <!-- Heading -->
+        <div class="rounded-l-full bg-brightRedSupLight md:bg-transparent">
+          <div class="flex items-center space-x-2">
+            <div class="px-4 py-2 text-white rounded-full md:py-1 bg-brightRed">
+              01
+            </div>
+            <h3 class="text-base font-bold md:mb-4 md:hidden">Model 1</h3>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="hidden mb-4 text-lg font-bold md:block">Model 1</h3>
+          <p class="text-darkGrayishBlue">
+            See how your day-to-day tasks fit into the wider vision. Go from
+            tracking progress at the milestone level all the way down to the
+            smallest of details. Never lose sight of the bigger picture again.
+          </p>
+        </div>
+      </div>
+
+      <!-- List Item 2 -->
+      <div
+        class="flex flex-col space-y-3 md:space-y-0 md:space-x-6 md:flex-row"
+      >
+        <!-- Heading -->
+        <div class="rounded-l-full bg-brightRedSupLight md:bg-transparent">
+          <div class="flex items-center space-x-2">
+            <div class="px-4 py-2 text-white rounded-full md:py-1 bg-brightRed">
+              02
+            </div>
+            <h3 class="text-base font-bold md:mb-4 md:hidden">Model 2</h3>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="hidden mb-4 text-lg font-bold md:block">Model 2</h3>
+          <p class="text-darkGrayishBlue">
+            Set internal delivery estimates and track progress toward company
+            goals. Our customisable dashboard helps you build out the reports
+            you need to keep key stakeholders informed.
+          </p>
+        </div>
+      </div>
+
+      <!-- List Item 3 -->
+      <div
+        class="flex flex-col space-y-3 md:space-y-0 md:space-x-6 md:flex-row"
+      >
+        <!-- Heading -->
+        <div class="rounded-l-full bg-brightRedSupLight md:bg-transparent">
+          <div class="flex items-center space-x-2">
+            <div class="px-4 py-2 text-white rounded-full md:py-1 bg-brightRed">
+              03
+            </div>
+            <h3 class="text-base font-bold md:mb-4 md:hidden">Model 3</h3>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="hidden mb-4 text-lg font-bold md:block">Model 3</h3>
+          <p class="text-darkGrayishBlue">
+            Stop jumping from one service to another to communicate, store
+            files, track tasks and share documents. Manage offers an all-in-one
+            team productivity solution.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials">
+  <!-- Container to heading and testm blocks -->
+  <div class="max-w-6xl px-5 mx-auto mt-32 text-center">
+    <!-- Heading -->
+    <h2 class="text-4xl font-bold text-center">Perbandingan Model</h2>
+    <!-- Testimonials Container -->
+    <div class="flex flex-col mt-24 md:flex-row md:space-x-6">
+      <!-- Testimonial 1 -->
+    </div>
+   
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="cta" class="bg-brightRed h-screen ">
+  <!-- Flex Container -->
+  <div
+    class="container flex flex-col items-center justify-between px-6 py-24 mx-auto space-y-12 md:py-12 md:flex-row md:space-y-0"
+  >
+    <!-- Heading -->
+    <h2
+      class="text-5xl font-bold text-center text-white md:text-4xl md:max-w-xl md:text-left"
+    >
+      Coba Pengenalan Wajah
+    </h2>
+    <!-- Button -->
+    <div class="flex items-center justify-between w-full md:w-auto">
+      <button
+        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl baseline hover:bg-gray-900 active:bg-gray-900 mr-10"
+        id="toggleImageTab"
+      >
+        Gambar
+      </button>
+      <button
+        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl baseline hover:bg-gray-900 active:bg-gray-900"
+        id="toggleCameraTab"
+      >
+        Kamera
+      </button>
+    </div>
+  </div>
+  <div
+    class="max-w-6xl px-5 mx-auto mt-10 mb-4 text-center"
+    id="selectionContainer"
+  >
+    <!-- Content Section - Image -->
+    <div id="imageSection">
+      <h2 class="text-4xl font-bold text-center">Gambar</h2>
+      <!-- Placeholder for displaying image classification result -->
+      <div
+        class="w-full h-80 bg-gray-200 flex items-center justify-center text-brightRed mt-10 rounded-full"
+      >
+        <!-- SVG icon for image placeholder -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-24 w-24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 11a2 2 0 100-4 2 2 0 000 4z"
+          ></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21h-5a2 2 0 01-2-2v-5a2 2 0 012-2h5a2 2 0 012 2v5a2 2 0 01-2 2z"
+          ></path>
+        </svg>
+      </div>
+      <!-- Button -->
+      <div class="my-16 flex justify-center">
+        <button
+          class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white"
+          id="selectImage"
+        >
+          Pilih Gambar
+        </button>
+      </div>
+    </div>
+    <!-- Content Section - Camera -->
+    <div id="cameraSection" style="display: none">
+      <h2 class="text-4xl font-bold text-center">Camera</h2>
+      <!-- Placeholder for displaying camera -->
+      <div
+        class="w-full h-80 bg-gray-200 flex items-center justify-center text-brightRed mt-10 rounded-full"
+      >
+        <!-- SVG icon for camera placeholder -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-24 w-24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"
+          ></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8V6m0 12v2m-6-6H6m12 0h2m-9-9L5 3m14 0l-2.5 2.5M5 21l2.5-2.5m14 0L19 21"
+          ></path>
+        </svg>
+      </div>
+      <!-- Button -->
+      <div class="my-16 mb-20">
+        <a
+          href="#"
+          class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white"
+          id="startCamera"
+          >Mulai Camera</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %} {% block script %}
+<script>
+  // Function to toggle between image and camera sections
+  function toggleSections(showImage) {
+    const imageSection = document.getElementById("imageSection");
+    const cameraSection = document.getElementById("cameraSection");
+    const imageTab = document.getElementById("toggleImageTab");
+    const cameraTab = document.getElementById("toggleCameraTab");
+
+    if (showImage) {
+      imageSection.style.display = "block";
+      cameraSection.style.display = "none";
+      imageTab.classList.add("active");
+      cameraTab.classList.remove("active");
+    } else {
+      imageSection.style.display = "none";
+      cameraSection.style.display = "block";
+      imageTab.classList.remove("active");
+      cameraTab.classList.add("active");
+    }
+  }
+
+  // Event listener for image tab
+  document
+    .getElementById("toggleImageTab")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+      toggleSections(true);
+    });
+
+  // Event listener for camera tab
+  document
+    .getElementById("toggleCameraTab")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+      toggleSections(false);
+    });
+
+  // Event listener for start camera button
+  document
+    .getElementById("startCamera")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+      // Redirect to camera page or handle camera activation using JavaScript
+      alert("Camera functionality will be implemented soon.");
+    });
+
+  // Event listener for image upload button
+  document
+    .getElementById("selectImage")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+      // Trigger file input click event
+      document.getElementById("imageInput").click();
+    });
+
+  // Event listener for file input change
+  document
+    .getElementById("imageInput")
+    .addEventListener("change", function (event) {
+      event.preventDefault();
+      const file = event.target.files[0];
+      if (file) {
+        // Implement image upload functionality here
+        alert("Image upload functionality will be implemented soon.");
+      }
+    });
+</script>
+
+{% endblock script %}
