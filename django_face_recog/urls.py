@@ -17,8 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import index
+from chart import views
  
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index')
+    path('', index, name='index'),
+    path('api/ck_data', views.CkData.as_view(),name='ck_data' ),
+    path('api/fer_chart_data', views.FerChartData.as_view(), name='fer_chart_data'),
+
 ]
