@@ -1,0 +1,100 @@
+{% extends "_base.html" %}
+{% block content %}
+<section id="uploadSection" class="py-8">
+  <h2 class="text-4xl font-bold text-center mb-8">Upload Gambar</h2>
+  <form id="uploadForm" method="post" action="{% url 'upload_image' %}" enctype="multipart/form-data" class="flex flex-col items-center">
+    {% csrf_token %}
+    <div class="flex flex-row items-center mb-4">
+      <!-- Hidden input for image selection -->
+      <input type="file" id="imageInput" name="image" style="display: none;">
+      <!-- Label for selecting image -->
+      <label for="imageInput" class="p-3 px-6 pt-2 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight cursor-pointer mr-4">
+        Pilih Gambar
+      </label>
+      <!-- Dropdown for action selection -->
+      <select name="action" id="actionSelect" class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white mr-4">
+        <option value="ck">CK+</option>
+        <option value="fer">FER2013</option>
+      </select>
+      <!-- Button for uploading -->
+      <button type="submit" class="p-3 px-6 pt-2 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight">
+        Upload
+      </button>
+    </div>
+  </form>
+
+  <div class="mb-64">
+<!-- Display selected image -->
+{% if not predicted_label and not accuracy %}
+<div id="imagePreview" class="mt-8 text-center flex flex-col items-center">
+  <h3 class="text-xl font-bold mb-2">Gambar yang Dipilih</h3>
+  <img id="selectedImage" src="#" alt="Selected Image" class="h-80 bg-gray-200 rounded-lg hidden">
+  <!-- Placeholder for no selected image -->
+  <p id="noImageSelected" class="text-gray-500 mt-2">Belum ada gambar dipilih</p>
+</div>
+{% endif %}
+
+<!-- Display prediction result if available -->
+{% if predicted_label and accuracy %}
+<div id="predictionResult" class="mt-8 text-center flex flex-col items-center">
+  <h2 class="text-2xl font-bold mb-2">Hasil Prediksi</h2>
+  <p class="text-lg">Label: {{ predicted_label }}</p>
+  <p class="text-lg">Akurasi: {{ accuracy }}%</p>
+  <!-- Display the originally selected image -->
+  <h3 class="text-xl font-bold mt-4">Gambar yang Diproses</h3>
+  <img src="data:image/png;base64,{{ image_base64 }}" alt="Processed Image" class="h-80 bg-gray-200 rounded-lg">
+</div>
+{% endif %}
+  </div>
+  
+</section>
+
+<script>
+// JavaScript to display selected image or placeholder
+document.getElementById('imageInput').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  const selectedImage = document.getElementById('selectedImage');
+  const noImageSelected = document.getElementById('noImageSelected');
+  
+  // Validate file type if needed
+  const fileType = file.type;
+  if (!fileType.startsWith('image/')) {
+    alert('File harus berupa gambar.');
+    return;
+  }
+  
+  // Display selected image or placeholder
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedImage.src = e.target.result;
+    selectedImage.classList.remove('hidden');
+    noImageSelected.classList.add('hidden');
+  }
+  reader.readAsDataURL(file);
+});
+
+// Display placeholder message when no image is selected initially
+document.addEventListener('DOMContentLoaded', function() {
+  const selectedImage = document.getElementById('selectedImage');
+  const noImageSelected = document.getElementById('noImageSelected');
+  
+  if (!selectedImage.src || selectedImage.src === '#') {
+    selectedImage.classList.add('hidden');
+    noImageSelected.classList.remove('hidden');
+  }
+});
+</script>
+
+<style>
+/* CSS untuk memusatkan gambar yang dipilih */
+#imagePreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hidden {
+  display: none;
+}
+</style>
+
+{% endblock content %}

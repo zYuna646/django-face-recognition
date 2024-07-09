@@ -1,0 +1,145 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<!-- Content Section - Camera -->
+<section id="cameraSection" class="py-16">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-8">Camera</h2>
+
+    <!-- Model selection -->
+    <div class="flex justify-center mb-4">
+      <select
+        name="action"
+        id="actionSelect"
+        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white"
+      >
+        <option value="ck">CK+</option>
+        <option value="fer">FER2013</option>
+      </select>
+    </div>
+
+    <!-- Placeholder for displaying camera -->
+    <div class="w-full h-80 bg-gray-200 flex items-center justify-center rounded-lg mb-8 relative" id="cameraContainer">
+      <video id="cameraFeed" class="rounded-lg hidden" autoplay></video>
+      <!-- SVG icon for camera placeholder -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        class="h-24 w-24 text-brightRed absolute inset-0 m-auto"
+        id="cameraPlaceholder"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"
+        ></path>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8V6m0 12v2m-6-6H6m12 0h2m-9-9L5 3m14 0l-2.5 2.5M5 21l2.5-2.5m14 0L19 21"
+        ></path>
+      </svg>
+    </div>
+
+    <!-- Button -->
+    <div class="flex justify-center">
+      <button
+        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full hover:bg-brightRedLight hover:text-white"
+        id="startCamera"
+      >
+        Mulai Camera
+      </button>
+    </div>
+    
+    <!-- Prediction Results -->
+    <div id="predictionResult" class="mt-8 text-center hidden">
+      <h2 class="text-2xl font-bold mb-2">Hasil Prediksi</h2>
+      <p class="text-lg" id="predictedLabel">Label: </p>
+      <p class="text-lg" id="accuracy">Akurasi: </p>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('startCamera').addEventListener('click', function() {
+  const video = document.getElementById('cameraFeed');
+  const placeholder = document.getElementById('cameraPlaceholder');
+  const predictionResult = document.getElementById('predictionResult');
+  const predictedLabel = document.getElementById('predictedLabel');
+  const accuracy = document.getElementById('accuracy');
+  const action = document.getElementById('actionSelect').value;
+  
+  // Get user media (camera)
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+      video.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      // Start the video and prediction process
+      video.addEventListener('loadeddata', function() {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        function captureAndPredict() {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const dataURL = canvas.toDataURL('image/png');
+
+          // Send image data to the server for prediction
+          fetch("{% url 'predict_camera' %}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ image: dataURL, action: action })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              predictedLabel.textContent = `Label: ${data.predicted_label}`;
+              accuracy.textContent = `Akurasi: ${data.accuracy}%`;
+              predictionResult.classList.remove('hidden');
+            }
+          });
+
+          // Call the function again after a short delay
+          setTimeout(captureAndPredict, 1000);
+        }
+
+        captureAndPredict();
+      });
+    })
+    .catch(error => {
+      console.error('Error accessing the camera: ', error);
+    });
+});
+</script>
+
+<style>
+/* CSS to center camera feed and prediction results */
+#cameraContainer {
+  position: relative;
+}
+#cameraFeed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#predictionResult {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+</style>
+
+{% endblock content %}

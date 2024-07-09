@@ -154,121 +154,28 @@
 
 
 <!-- CTA Section -->
+<!-- CTA Section -->
 <section id="cta" class="bg-brightRed h-screen">
   <!-- Flex Container -->
-  <div
-    class="container flex flex-col items-center justify-between px-6 py-24 mx-auto space-y-12 md:py-12 md:flex-row md:space-y-0"
-  >
+  <div class="container flex flex-col items-center justify-center px-6 py-24 mx-auto space-y-12 md:flex-row md:space-y-0">
     <!-- Heading -->
-    <h2
-      class="text-5xl font-bold text-center text-white md:text-4xl md:max-w-xl md:text-left"
-    >
+    <h2 class="text-5xl font-bold text-center text-white md:text-4xl md:max-w-xl md:text-left">
       Coba Pengenalan Wajah
-      <select id="modelSelect" class="p-3 px-6 pt-2 text-3xl text-brightRed bg-white rounded-full shadow-2xl mr-10">
-        <option value="face_expnet" selected>Face Expnet</option>
-        <option value="resmaking">Resmaking</option>
-      </select>
     </h2>
    
     <!-- Button -->
-    <div class="flex items-center justify-between w-full md:w-auto">
-      <button
-        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl baseline hover:bg-gray-900 active:bg-gray-900 mr-10"
-        id="toggleImageTab"
-      >
-        Gambar
-      </button>
-      <button
-        class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl baseline hover:bg-gray-900 active:bg-gray-900"
-        id="toggleCameraTab"
-      >
-        Kamera
-      </button>
-    </div>
+    
   </div>
-  <div
-    class="max-w-6xl px-5 mx-auto mt-10 mb-4 text-center"
-    id="selectionContainer"
-  >
-  
+
+  <div class="max-w-6xl px-5 mx-auto mt-10 mb-4 text-center" id="selectionContainer">
     <!-- Content Section - Image -->
-    <div id="imageSection">
-      <h2 class="text-4xl font-bold text-center">Gambar</h2>
-      <!-- Placeholder for displaying image classification result -->
-      <div
-        class="w-full h-80 bg-gray-200 flex items-center justify-center text-brightRed mt-10 rounded-full"
-      >
-        <!-- SVG icon for image placeholder -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class="h-24 w-24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 11a2 2 0 100-4 2 2 0 000 4z"
-          ></path>
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21h-5a2 2 0 01-2-2v-5a2 2 0 012-2h5a2 2 0 012 2v5a2 2 0 01-2 2z"
-          ></path>
-        </svg>
-      </div>
-      <!-- Button -->
-      <div class="my-16 flex justify-center">
-        
-        <button
-          class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white"
-          id="selectImage"
-        >
-          Pilih Gambar
-        </button>
-      </div>
-    </div>
-    <!-- Content Section - Camera -->
-    <div id="cameraSection" style="display: none">
-      <h2 class="text-4xl font-bold text-center">Camera</h2>
-      <!-- Placeholder for displaying camera -->
-      <div
-        class="w-full h-80 bg-gray-200 flex items-center justify-center text-brightRed mt-10 rounded-full"
-      >
-        <!-- SVG icon for camera placeholder -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class="h-24 w-24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"
-          ></path>
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 8V6m0 12v2m-6-6H6m12 0h2m-9-9L5 3m14 0l-2.5 2.5M5 21l2.5-2.5m14 0L19 21"
-          ></path>
-        </svg>
-      </div>
-      <!-- Button -->
-      <div class="my-16 mb-20">
-        <a
-          href="#"
-          class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full baseline hover:bg-brightRedLight hover:text-white"
-          id="startCamera"
-          >Mulai Camera</a
-        >
-      </div>
+    <div class="flex items-center justify-center mt-12 space-x-8 md:mt-0">
+      <a href="/upload_image" class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl hover:bg-gray-900 active:bg-gray-900">
+        Gambar
+      </a>
+      <a href="/camera" class="p-3 px-6 pt-2 text-brightRed bg-white rounded-full shadow-2xl hover:bg-gray-900 active:bg-gray-900">
+        Kamera
+      </a>
     </div>
   </div>
 </section>
@@ -321,25 +228,88 @@
     });
 
   // Event listener for image upload button
-  document
-    .getElementById("selectImage")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      // Trigger file input click event
-      document.getElementById("imageInput").click();
-    });
+//   document.getElementById("selectImage").addEventListener("click", function (event) {
+//   event.preventDefault();
+//   document.getElementById("imageInput").click();
+// });
+
 
   // Event listener for file input change
-  document
-    .getElementById("imageInput")
-    .addEventListener("change", function (event) {
-      event.preventDefault();
-      const file = event.target.files[0];
-      if (file) {
-        // Implement image upload functionality here
-        alert("Image upload functionality will be implemented soon.");
-      }
-    });
+//   document.getElementById("imageInput").addEventListener("change", function (event) {
+//   event.preventDefault();
+//   const file = event.target.files[0];
+//   if (file) {
+//     const formData = new FormData();
+//     formData.append("image", file);
+
+//     // AJAX request to handle file upload
+//     $.ajax({
+//       url: "/upload_image/",  // Replace with your Django URL
+//       method: "POST",
+//       data: formData,
+//       processData: false,
+//       contentType: false,
+//       success: function (response) {
+//         // Handle success response
+//         alert("Image uploaded successfully!");
+//         // Update the uploaded image src attribute
+//         document.getElementById("uploadedImage").src = URL.createObjectURL(file);
+//       },
+//       error: function (error) {
+//         // Handle error
+//         console.error("Error uploading image:", error);
+//       }
+//     });
+//   }
+// });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // Select the image input element
+  const imageInput = document.getElementById('imageInput');
+  // Select the form element
+  const uploadForm = document.getElementById('uploadForm');
+
+  // Add click event listener to selectImage button
+  document.getElementById('selectImage').addEventListener('click', function () {
+    // Trigger click event on imageInput when selectImage button is clicked
+    imageInput.click();
+  });
+
+  // Add change event listener to imageInput
+  imageInput.addEventListener('change', function () {
+    // Get the selected file
+    const file = imageInput.files[0];
+
+    // Validate if a file is selected
+    if (file) {
+      // Create FormData object
+      const formData = new FormData();
+      formData.append('image', file);
+
+      // Example URL where you want to send the image data
+      const uploadUrl = '/upload/'; // Replace with your actual upload URL
+
+      // Example of how to send the image data using fetch
+      fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle response data as needed
+        console.log('Upload successful:', data);
+        // Optionally, display uploaded image on the page
+        const uploadedImage = document.getElementById('uploadedImage');
+        uploadedImage.src = URL.createObjectURL(file); // Display the uploaded image
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+      });
+    }
+  });
+});
+
 </script>
 <script>
   $(document).ready(function () {
