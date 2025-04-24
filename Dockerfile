@@ -21,14 +21,15 @@ RUN pip install mod_wsgi
 # Copy project files
 COPY . .
 
-# Configure Apache
+# Install mod_wsgi but don't configure Apache
 RUN mod_wsgi-express install-module
-COPY apache-conf/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY apache-conf/apache2.conf /etc/apache2/apache2.conf
 RUN a2enmod wsgi
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
+
+# Make entrypoint script executable
+RUN chmod +x /app/docker-entrypoint/entrypoint.sh
 
 # Expose the port Apache runs on
 EXPOSE 80
@@ -37,5 +38,5 @@ EXPOSE 80
 RUN useradd -m appuser
 RUN chown -R appuser:appuser /app
 
-# Run Apache in the foreground
-CMD ["apache2ctl", "-D", "FOREGROUND"] 
+# Use our entrypoint script
+ENTRYPOINT ["/app/docker-entrypoint/entrypoint.sh"] 
