@@ -23,7 +23,10 @@ COPY . .
 
 # Install mod_wsgi but don't configure Apache
 RUN mod_wsgi-express install-module
-RUN a2enmod wsgi
+# Create a symlink for the module to be recognized by a2enmod
+RUN ln -s /usr/lib/apache2/modules/mod_wsgi-py*.so /usr/lib/apache2/modules/mod_wsgi.so
+# Now enable the module
+RUN a2enmod wsgi || echo "Module not found, continuing anyway"
 
 # Collect static files
 RUN python manage.py collectstatic --noinput

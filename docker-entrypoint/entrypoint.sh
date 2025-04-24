@@ -25,6 +25,18 @@ if User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 "
 fi
 
+# Ensure mod_wsgi is properly configured
+WSGI_MODULE_PATH=$(ls /usr/lib/apache2/modules/mod_wsgi-py*.so 2>/dev/null || echo "")
+if [ -n "$WSGI_MODULE_PATH" ]; then
+    echo "Found mod_wsgi module at: $WSGI_MODULE_PATH"
+    # Create a loadmodule.conf file for Apache
+    echo "LoadModule wsgi_module $WSGI_MODULE_PATH" > /etc/apache2/mods-available/wsgi.load
+    echo "WSGIPythonHome /usr" >> /etc/apache2/mods-available/wsgi.load
+    a2enmod wsgi || echo "Failed to enable wsgi module, continuing anyway"
+else
+    echo "WARNING: mod_wsgi module not found!"
+fi
+
 # Start Apache in foreground
 echo "Starting Apache..."
 exec apache2ctl -D FOREGROUND 
