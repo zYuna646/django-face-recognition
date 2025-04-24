@@ -12,3 +12,4 @@ beautifulsoup4==4.12.2
 django-compressor==4.4
 channels==4.0.0
 daphne==4.0.0
+djangorestframework==3.14.0
