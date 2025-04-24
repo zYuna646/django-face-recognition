@@ -1,0 +1,299 @@
+{% extends "_base.html" %} {% block content %}
+<!-- Hero Section -->
+<section id="hero" class="py-20">
+  <!-- Flex Container -->
+  <div
+    class="container flex flex-col-reverse items-center px-6 mx-auto space-y-0 md:space-y-0 md:flex-row"
+  >
+    <!-- Left item -->
+    <div class="flex flex-col mb-32 space-y-12 md:w-1/2">
+      <h1
+        class="max-w-md text-4xl font-bold text-center md:text-5xl md:text-left text-gray-800"
+      >
+        Facial Expression Recognition
+      </h1>
+      <p class="max-w-sm text-center text-gray-600 md:text-left">
+        Our advanced AI models can recognize and analyze facial expressions with high accuracy,
+        providing insights into human emotions in real-time.
+      </p>
+      <div class="flex justify-center md:justify-start">
+        <a
+          href="#cta"
+          class="btn-primary"
+          >Try Our Models</a
+        >
+      </div>
+    </div>
+    <!-- Image -->
+    <div class="md:w-1/2 flex justify-center">
+      <img src="../static/img/illustration-intro.svg" alt="Facial recognition illustration" class="w-full max-w-md" />
+    </div>
+  </div>
+</section>
+
+<!-- Feature Section -->
+<section id="features" class="py-20 bg-gray-50">
+  <!-- Container -->
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">Our AI Models</h2>
+      <p class="text-gray-600 max-w-lg mx-auto">
+        We've trained multiple models on different datasets to provide the best facial expression recognition capabilities
+      </p>
+    </div>
+    
+    <!-- Models Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <!-- Model 1 -->
+      <div class="card p-6 hover:transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center mb-4">
+          <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+            01
+          </div>
+          <h3 class="text-xl font-bold text-gray-800">Face ExpNet</h3>
+        </div>
+        
+        <p class="text-gray-600 mb-6">
+          Face ExpNet is a specialized deep learning model designed for facial expression recognition. 
+          It can analyze facial expressions from images or videos and identify various emotions such as 
+          happiness, sadness, anger, surprise, and more.
+        </p>
+        
+        <div class="bg-gray-100 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-700 mb-2">Key Features:</h4>
+          <ul class="text-gray-600 space-y-2 pl-4">
+            <li>• Trained on the CK+ dataset</li>
+            <li>• High accuracy for controlled environments</li>
+            <li>• Optimized for 7 basic emotions</li>
+            <li>• Low latency processing</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Model 2 -->
+      <div class="card p-6 hover:transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center mb-4">
+          <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+            02
+          </div>
+          <h3 class="text-xl font-bold text-gray-800">ResMasking</h3>
+        </div>
+        
+        <p class="text-gray-600 mb-6">
+          ResMasking is an AI model specifically designed for facial expression recognition using deep neural network 
+          architecture. It leverages a combination of convolutional networks (CNN) and residual networks (ResNet) for 
+          enhanced performance.
+        </p>
+        
+        <div class="bg-gray-100 p-4 rounded-lg">
+          <h4 class="font-medium text-gray-700 mb-2">Key Features:</h4>
+          <ul class="text-gray-600 space-y-2 pl-4">
+            <li>• Trained on the FER2013 dataset</li>
+            <li>• Better performance in real-world conditions</li>
+            <li>• Enhanced feature extraction</li>
+            <li>• Robust to lighting variations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison Section -->
+<section id="testimonials" class="py-20">
+  <div class="container mx-auto px-6">
+    <!-- Heading -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">Model Comparison</h2>
+      <p class="text-gray-600 max-w-lg mx-auto">
+        See how our models perform across different recognition tasks and environments
+      </p>
+    </div>
+    
+    <!-- Comparison Image -->
+    <div class="card p-8 mb-12 max-w-5xl mx-auto">
+      <img src="../static/img/comparasion.png" class="mx-auto max-w-full h-auto" alt="Model comparison chart">
+    </div>
+    
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">CK+ Model Performance</h3>
+        <canvas id="ckChart"></canvas>
+      </div>
+      
+      <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">FER2013 Model Performance</h3>
+        <canvas id="ferChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="cta" class="relative py-24 overflow-hidden">
+  <!-- Gradient Background -->
+  <div class="absolute inset-0 gradient-bg"></div>
+  
+  <!-- Glass Effect Overlay -->
+  <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+  
+  <!-- Content Container -->
+  <div class="container relative z-10 mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-800">Try Facial Expression Recognition</h2>
+      <p class="max-w-xl mx-auto text-gray-700 text-lg">
+        Experience the power of our AI models in recognizing emotions from faces. Choose one of our methods below to begin.
+      </p>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto justify-center">
+      <!-- Image Upload Card -->
+      <div class="bg-white/80 rounded-2xl p-8 backdrop-blur-md transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:bg-white/90 flex-1 max-w-md shadow-md">
+        <div class="text-center mb-8">
+          <div class="bg-blue-100 p-6 rounded-full inline-block mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 text-gray-800">Image Upload</h3>
+          <p class="mb-8 text-gray-600">
+            Upload an image and our AI will analyze the facial expressions to determine the emotion being displayed.
+            Perfect for analyzing individual photos.
+          </p>
+          <a href="/upload_image" class="btn-primary shadow-lg">
+            <span class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+              Upload Image
+            </span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Camera Card -->
+      <div class="bg-white/80 rounded-2xl p-8 backdrop-blur-md transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:bg-white/90 flex-1 max-w-md shadow-md">
+        <div class="text-center mb-8">
+          <div class="bg-blue-100 p-6 rounded-full inline-block mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 text-gray-800">Live Camera</h3>
+          <p class="mb-8 text-gray-600">
+            Use your webcam for real-time emotion detection. Our AI will continuously analyze your facial expressions as you interact with the camera.
+          </p>
+          <a href="/camera" class="btn-primary shadow-lg">
+            <span class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+              </svg>
+              Start Camera
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Wave Overlay -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full">
+      <path fill="#f8f9fa" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</section>
+
+{% endblock content %} 
+
+{% block script %}
+<script>
+  // Chart.js code for rendering the performance charts
+  document.addEventListener('DOMContentLoaded', function() {
+    // CK+ Chart
+    const ckCtx = document.getElementById('ckChart').getContext('2d');
+    const ckChart = new Chart(ckCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise'],
+        datasets: [{
+          label: 'Accuracy (%)',
+          data: [92, 96, 88, 98, 90, 87, 95],
+          backgroundColor: [
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)',
+            'rgba(79, 70, 229, 0.7)'
+          ],
+          borderColor: [
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)',
+            'rgba(79, 70, 229, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+    
+    // FER2013 Chart
+    const ferCtx = document.getElementById('ferChart').getContext('2d');
+    const ferChart = new Chart(ferCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise'],
+        datasets: [{
+          label: 'Accuracy (%)',
+          data: [82, 76, 78, 90, 85, 80, 88],
+          backgroundColor: [
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)',
+            'rgba(14, 165, 233, 0.7)'
+          ],
+          borderColor: [
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)',
+            'rgba(14, 165, 233, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock script %}

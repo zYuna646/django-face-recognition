@@ -1,0 +1,221 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<!-- Content Section - Camera -->
+<section id="cameraSection" class="py-16 container mx-auto px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Facial Emotion Recognition</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">Use your camera to detect facial expressions in real-time using our advanced AI models.</p>
+    </div>
+
+    <!-- Model selection -->
+    <div class="flex justify-center mb-8">
+      <div class="bg-white shadow-md rounded-xl p-6 w-full max-w-md">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Select AI Model</h2>
+        <div class="flex items-center space-x-4">
+          <select
+            name="action"
+            id="actionSelect"
+            class="btn-secondary w-full text-center"
+          >
+            <option value="ck">CK+ Model</option>
+            <option value="fer">FER2013 Model</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder for displaying camera -->
+    <div class="card w-full bg-white p-4 rounded-xl shadow-lg mb-8 relative overflow-hidden">
+      <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+        <video id="cameraFeed" class="w-full h-full object-cover rounded-lg hidden" autoplay></video>
+        <!-- SVG icon for camera placeholder -->
+        <div id="cameraPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
+          <div class="text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="h-24 w-24 text-primary mx-auto mb-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <p class="text-gray-500">Camera will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Button -->
+    <div class="flex justify-center mb-12">
+      <button
+        class="btn-primary flex items-center"
+        id="startCamera"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+        </svg>
+        Start Camera
+      </button>
+    </div>
+    
+    <!-- Prediction Results -->
+    <div id="predictionResult" class="card bg-white p-6 rounded-xl shadow-lg text-center mb-8 hidden">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">Prediction Results</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="text-lg font-medium mb-2 text-gray-700">Detected Emotion</h3>
+          <div class="text-3xl font-bold text-primary" id="predictedLabel">-</div>
+        </div>
+        
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="text-lg font-medium mb-2 text-gray-700">Confidence Level</h3>
+          <div class="relative pt-1">
+            <div class="flex mb-2 items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary bg-blue-200">
+                  Accuracy
+                </span>
+              </div>
+              <div class="text-right">
+                <span id="accuracyValue" class="text-xs font-semibold inline-block text-primary">
+                  0%
+                </span>
+              </div>
+            </div>
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+              <div id="accuracyBar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('startCamera').addEventListener('click', function() {
+  const video = document.getElementById('cameraFeed');
+  const placeholder = document.getElementById('cameraPlaceholder');
+  const predictionResult = document.getElementById('predictionResult');
+  const predictedLabel = document.getElementById('predictedLabel');
+  const accuracyBar = document.getElementById('accuracyBar');
+  const accuracyValue = document.getElementById('accuracyValue');
+  const action = document.getElementById('actionSelect').value;
+  
+  // Get user media (camera)
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+      video.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      // Start the video and prediction process
+      video.addEventListener('loadeddata', function() {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        function captureAndPredict() {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const dataURL = canvas.toDataURL('image/png');
+
+          // Send image data to the server for prediction
+          fetch("{% url 'predict_camera' %}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ image: dataURL, action: document.getElementById('actionSelect').value })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Update the UI with prediction results
+              predictedLabel.textContent = data.predicted_label;
+              accuracyValue.textContent = data.accuracy.toFixed(2) + '%';
+              accuracyBar.style.width = data.accuracy + '%';
+              predictionResult.classList.remove('hidden');
+              
+              // Add animation effect for result update
+              predictedLabel.classList.add('animate-pulse');
+              setTimeout(() => {
+                predictedLabel.classList.remove('animate-pulse');
+              }, 300);
+            }
+          })
+          .catch(error => {
+            console.error('Error during prediction:', error);
+          });
+
+          // Call the function again after a short delay
+          setTimeout(captureAndPredict, 1000);
+        }
+
+        captureAndPredict();
+      });
+    })
+    .catch(error => {
+      console.error('Error accessing the camera: ', error);
+      
+      // Show error message
+      placeholder.innerHTML = `
+        <div class="text-center text-red-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p>Camera access denied. Please check your permissions.</p>
+        </div>
+      `;
+    });
+});
+
+// Listen for model selection changes
+document.getElementById('actionSelect').addEventListener('change', function() {
+  const predictionResult = document.getElementById('predictionResult');
+  if (!document.getElementById('cameraFeed').classList.contains('hidden')) {
+    // Reset prediction display when model changes
+    document.getElementById('predictedLabel').textContent = '-';
+    document.getElementById('accuracyValue').textContent = '0%';
+    document.getElementById('accuracyBar').style.width = '0%';
+  }
+});
+</script>
+
+<style>
+.aspect-w-16 {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+.aspect-w-16 > * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+</style>
+{% endblock content %}
