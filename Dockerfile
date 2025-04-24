@@ -28,9 +28,6 @@ RUN ln -s /usr/lib/apache2/modules/mod_wsgi-py*.so /usr/lib/apache2/modules/mod_
 # Now enable the module
 RUN a2enmod wsgi || echo "Module not found, continuing anyway"
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
 # Make entrypoint script executable
 RUN chmod +x /app/docker-entrypoint/entrypoint.sh
 
