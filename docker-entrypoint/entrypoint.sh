@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Make sure the SQLite database file exists and has proper permissions
+echo "Setting up SQLite database..."
+touch /app/db.sqlite3
+chmod 666 /app/db.sqlite3
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput || echo "Collectstatic failed, continuing anyway"
@@ -30,7 +35,7 @@ if User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 fi
 
 # Ensure mod_wsgi is properly configured
-WSGI_MODULE_PATH=$(ls /usr/lib/apache2/modules/mod_wsgi-py*.so 2>/dev/null || echo "")
+WSGI_MODULE_PATH=$(find /usr/local/lib -name 'mod_wsgi*.so' 2>/dev/null || echo "")
 if [ -n "$WSGI_MODULE_PATH" ]; then
     echo "Found mod_wsgi module at: $WSGI_MODULE_PATH"
     # Create a loadmodule.conf file for Apache

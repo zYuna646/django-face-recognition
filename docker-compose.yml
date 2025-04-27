@@ -7,14 +7,16 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
+      - ./db.sqlite3:/app/db.sqlite3:rw
       - ./static:/app/staticfiles
       - ./upload:/app/media
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
+      - SQLITE_DB_PATH=/app/db.sqlite3
     networks:
       - app-network
+    user: "root"
 
 networks:
   app-network:
