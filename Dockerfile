@@ -22,6 +22,7 @@ COPY . .
 
 # Create required directories
 RUN mkdir -p /app/staticfiles /app/media
+RUN mkdir -p /app/static
 
 # Create simple entrypoint script
 RUN echo '#!/bin/bash\n\
