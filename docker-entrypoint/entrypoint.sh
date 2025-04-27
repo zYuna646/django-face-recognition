@@ -63,7 +63,11 @@ fi
 
 # Enable required Apache modules
 echo "Enabling Apache modules..."
-a2enmod mpm_prefork  # Enable MPM Prefork module
+# Disable conflicting MPM modules first
+a2dismod mpm_event
+a2dismod mpm_worker
+# Now enable prefork
+a2enmod mpm_prefork
 a2enmod ssl
 a2enmod socache_shmcb
 a2enmod rewrite
