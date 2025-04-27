@@ -76,6 +76,15 @@ if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]; then
         -subj "/CN=fer.webapps.digital"
 fi
 
+# Copy Apache configuration correctly to standard locations
+echo "Setting up Apache configuration..."
+cp /app/apache-conf/apache2.conf /etc/apache2/apache2.conf
+cp /app/apache-conf/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
+
+# Disable default config and enable our site
+a2dissite 000-default || true
+a2ensite fer.webapps.digital
+
 # Verify Apache configuration
 echo "Verifying Apache configuration..."
 apache2ctl configtest
