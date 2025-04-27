@@ -47,12 +47,14 @@ INSTALLED_APPS = [
     'compressor',
     'channels',
     'rest_framework',
-    'upload'
+    'upload',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -142,3 +144,39 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Tambahkan konfigurasi Whitenoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Keamanan dan cookie settings
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 tahun
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_REFERRER_POLICY = "same-origin"
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+else:
+    # Untuk pengembangan lokal, izinkan HTTP
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
+
+# Cross-Origin settings
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://fer.webapps.digital",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://fer.webapps.digital",
+    "http://localhost:8080", 
+    "http://127.0.0.1:8080",
+]
+
+# Konfigurasi Cross-Origin untuk fitur kamera
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+# Headers tambahan untuk mengizinkan akses kamera
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
