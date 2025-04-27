@@ -1,63 +1,20 @@
-# Python
+.git
+.gitignore
+.env
+*.pyc
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
 env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Django
-*.log
-*.pot
-*.pyc
-local_settings.py
-# Don't exclude db.sqlite3 as we need it
-# db.sqlite3
-# Don't exclude media as we need it 
-# media
-
-# Virtual Environment
 venv/
 ENV/
-.env
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Docker
-# Keep Docker files for reference
-# .dockerignore
-# Dockerfile
-
-# Git
-.git/
-.gitignore
-
-# User uploaded content
-# We need to keep the directories but not the content
-# /media/uploads/
-
-# Any other large files or directories not needed in the container
 node_modules/
-
-# Don't exclude these important directories
-!static/
-!media/
-!upload/ 
+package-lock.json
+package.json
+tailwind.config.js
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md 

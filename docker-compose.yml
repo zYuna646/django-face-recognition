@@ -2,21 +2,19 @@ version: '3.8'
 
 services:
   web:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    image: django-face-app:latest
-    container_name: django-face-app
+    build: .
+    container_name: django_face_recog
     restart: always
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
       - ./static:/app/static
+      - ./staticfiles:/app/staticfiles
       - ./media:/app/media
       - ./upload:/app/upload
+      - ./db.sqlite3:/app/db.sqlite3
     environment:
       - DEBUG=False
+      - SECRET_KEY=your_production_secret_key_here
       - ALLOWED_HOSTS=fer.webapps.digital,localhost,127.0.0.1
-      - SECRET_KEY=your-secret-key-here-replace-this
       - SQLITE_DB_PATH=/app/db.sqlite3 

@@ -1,23 +1,14 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV VIRTUAL_ENV=/opt/venv
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install required system packages
+RUN apt-get update && apt-get install -y \
     build-essential \
-    libopencv-dev \
-    python3-opencv \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
     apache2 \
+    apache2-dev \
     libapache2-mod-wsgi-py3 \
-    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Create and activate virtual environment
-RUN python -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
@@ -25,9 +16,14 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt .
 
-# Install Python dependencies in the virtual environment
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Create and activate virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies in virtual environment
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install mod_wsgi
 
 # Copy project files
 COPY . .
@@ -35,23 +31,19 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Create media directory with correct permissions
-RUN mkdir -p /app/media && chmod 755 /app/media
-RUN mkdir -p /app/upload && chmod 755 /app/upload
+# Setup Apache configuration
+COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
 
-# Expose port for Apache
+# Set permissions for media and static directories
+RUN mkdir -p /app/media && \
+    chmod -R 755 /app/static /app/staticfiles /app/media /app/upload && \
+    chown -R www-data:www-data /app/static /app/staticfiles /app/media /app/upload /app/db.sqlite3
+
+# Enable necessary Apache modules
+RUN a2enmod wsgi headers rewrite
+
+# Expose port
 EXPOSE 80
 
-# Copy the Apache configuration file
-COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
-
-# Enable required Apache modules
-RUN a2enmod wsgi
-RUN a2enmod headers
-RUN a2enmod rewrite
-
-# Set permissions for Apache
-RUN chown -R www-data:www-data /app
-
-# Use Apache as the entrypoint
+# Run Apache in foreground
 CMD ["apache2ctl", "-D", "FOREGROUND"] 
