@@ -8,11 +8,10 @@ services:
       - "8080:3500"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3:rw
-      - ./static:/app/static:rw
-      - ./staticfiles:/app/staticfiles:rw
-      - ./upload:/app/media:rw
+      - ./static:/app/staticfiles
+      - ./upload:/app/media
     environment:
-      - DEBUG=True
+      - DEBUG=False
       - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
       - SQLITE_DB_PATH=/app/db.sqlite3
     networks:
