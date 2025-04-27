@@ -34,15 +34,15 @@ chmod 666 /app/db.sqlite3\n\
 \n\
 # Collect static files\n\
 echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput\n\
+python manage.py collectstatic --noinput --clear\n\
 \n\
 # Apply database migrations\n\
 echo "Applying database migrations..."\n\
 python manage.py migrate --noinput\n\
 \n\
-# Start Django\n\
+# Start Django with debug logging\n\
 echo "Starting Django server..."\n\
-exec gunicorn django_face_recog.wsgi:application --bind 0.0.0.0:3500\n\
+exec gunicorn django_face_recog.wsgi:application --bind 0.0.0.0:3500 --log-level debug\n\
 ' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Expose the port Gunicorn runs on
