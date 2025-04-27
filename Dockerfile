@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn whitenoise
+RUN pip install gunicorn django-csp
 
 # Copy project files
 COPY . .
@@ -34,7 +34,7 @@ chmod 666 /app/db.sqlite3\n\
 \n\
 # Collect static files\n\
 echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput --clear\n\
+python manage.py collectstatic --noinput\n\
 \n\
 # Apply database migrations\n\
 echo "Applying database migrations..."\n\
@@ -42,12 +42,7 @@ python manage.py migrate --noinput\n\
 \n\
 # Start Django\n\
 echo "Starting Django server..."\n\
-exec gunicorn django_face_recog.wsgi:application \\\n\
-    --bind 0.0.0.0:3500 \\\n\
-    --workers 3 \\\n\
-    --forwarded-allow-ips="*" \\\n\
-    --access-logfile - \\\n\
-    --error-logfile -\n\
+exec gunicorn django_face_recog.wsgi:application --bind 0.0.0.0:3500\n\
 ' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Expose the port Gunicorn runs on
