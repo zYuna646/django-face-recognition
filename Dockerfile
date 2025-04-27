@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apache2 \
     apache2-dev \
     gcc \
+    openssl \
+    ssl-cert \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -39,8 +41,8 @@ RUN chmod +x /app/docker-entrypoint/entrypoint.sh
 # Create required directories
 RUN mkdir -p /app/staticfiles /app/media
 
-# Expose the port Apache runs on
-EXPOSE 80
+# Expose both HTTP and HTTPS ports
+EXPOSE 80 443
 
 # Create a non-root user
 RUN useradd -m appuser

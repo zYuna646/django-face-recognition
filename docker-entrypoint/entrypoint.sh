@@ -34,17 +34,51 @@ if User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 "
 fi
 
-# Ensure mod_wsgi is properly configured
-WSGI_MODULE_PATH=$(find /usr/local/lib -name 'mod_wsgi*.so' 2>/dev/null || echo "")
+# Properly configure mod_wsgi for Apache
+echo "Configuring mod_wsgi for Apache..."
+# Find the actual mod_wsgi path
+WSGI_MODULE_PATH=$(find /usr/local -name 'mod_wsgi*.so' 2>/dev/null)
 if [ -n "$WSGI_MODULE_PATH" ]; then
     echo "Found mod_wsgi module at: $WSGI_MODULE_PATH"
-    # Create a loadmodule.conf file for Apache
-    echo "LoadModule wsgi_module $WSGI_MODULE_PATH" > /etc/apache2/mods-available/wsgi.load
+    
+    # Remove old mod_wsgi.so symlink if it exists
+    rm -f /usr/lib/apache2/modules/mod_wsgi.so
+    
+    # Create directory if it doesn't exist
+    mkdir -p /usr/lib/apache2/modules/
+    
+    # Create a proper symlink to the module
+    ln -sf $WSGI_MODULE_PATH /usr/lib/apache2/modules/mod_wsgi.so
+    
+    # Update Apache configuration
+    echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" > /etc/apache2/mods-available/wsgi.load
     echo "WSGIPythonHome /usr" >> /etc/apache2/mods-available/wsgi.load
-    a2enmod wsgi || echo "Failed to enable wsgi module, continuing anyway"
+    
+    # Enable the module
+    a2enmod wsgi
 else
-    echo "WARNING: mod_wsgi module not found!"
+    echo "ERROR: mod_wsgi module not found! Apache will not start properly."
+    exit 1
 fi
+
+# Enable SSL module
+echo "Enabling SSL module for Apache..."
+a2enmod ssl
+a2enmod socache_shmcb
+
+# Create self-signed certificate if not exists
+if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]; then
+    echo "Creating self-signed SSL certificate..."
+    mkdir -p /etc/ssl/private /etc/ssl/certs
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+        -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
+        -subj "/CN=fer.webapps.digital"
+fi
+
+# Verify Apache configuration
+echo "Verifying Apache configuration..."
+apache2ctl configtest
 
 # Start Apache in foreground
 echo "Starting Apache..."

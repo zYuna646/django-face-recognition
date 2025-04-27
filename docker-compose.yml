@@ -6,6 +6,7 @@ services:
     restart: always
     ports:
       - "8080:80"
+      - "8443:443"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3:rw
       - ./static:/app/staticfiles
@@ -14,6 +15,7 @@ services:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
       - SQLITE_DB_PATH=/app/db.sqlite3
+      - DJANGO_ALLOWED_HOSTS=fer.webapps.digital,www.fer.webapps.digital,localhost
     networks:
       - app-network
     user: "root"
