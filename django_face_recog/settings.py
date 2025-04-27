@@ -163,20 +163,35 @@ else:
     SECURE_SSL_REDIRECT = False
 
 # Cross-Origin settings
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "https://fer.webapps.digital",
+    "http://fer.webapps.digital",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://fer.webapps.digital",
+    "http://fer.webapps.digital",
     "http://localhost:8080", 
     "http://127.0.0.1:8080",
 ]
 
 # Konfigurasi Cross-Origin untuk fitur kamera
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # Headers tambahan untuk mengizinkan akses kamera
 SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
