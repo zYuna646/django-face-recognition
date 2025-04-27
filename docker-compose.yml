@@ -9,24 +9,10 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
+      - ./db.sqlite3:/app/db.sqlite3
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY}
-      - DATABASE_URL=postgres://postgres:${DB_PASSWORD}@db:5432/facial_recognition
-    depends_on:
-      - db
-    networks:
-      - app-network
-
-  db:
-    image: postgres:13
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=facial_recognition
     networks:
       - app-network
 
@@ -35,6 +21,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
   static_volume:
   media_volume: 
