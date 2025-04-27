@@ -2,7 +2,10 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: django-face-app:latest
     container_name: django-face-app
     restart: always
     ports:

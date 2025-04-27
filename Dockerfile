@@ -48,6 +48,7 @@ COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 # Enable required Apache modules
 RUN a2enmod wsgi
 RUN a2enmod headers
+RUN a2enmod rewrite
 
 # Set permissions for Apache
 RUN chown -R www-data:www-data /app
