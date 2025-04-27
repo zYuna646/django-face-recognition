@@ -27,18 +27,31 @@ This application is dockerized for easy deployment using Apache with WSGI.
    ./deploy.sh
    ```
 
+## Port Configuration
+
+The application uses:
+- Port 80 inside the Docker container (Apache)
+- Port 8080 on the host machine
+
+If port 8080 is already in use on your host, you can change it in the `docker-compose.yml` file:
+```yaml
+ports:
+  - "YOUR_DESIRED_PORT:80"
+```
+
 ## Deployment Process
 
 The deployment script performs the following steps:
-1. Cleans up Docker resources (removes old containers, volumes, and cache)
-2. Builds the Docker image fresh (no-cache)
-3. Starts the container
-4. Applies database migrations
-5. Configures Apache to serve the site at fer.webapps.digital
+1. Checks if port 8080 is already in use
+2. Cleans up Docker resources (removes old containers, volumes, and cache)
+3. Builds the Docker image fresh (no-cache)
+4. Starts the container
+5. Applies database migrations
+6. Configures Apache to serve the site at fer.webapps.digital
    - Creates Apache config file named `fer.webapps.digital.conf`
    - Disables the default site
    - Enables the new site
-6. Sets proper permissions for static files
+7. Sets proper permissions for static files
 
 ## File Structure
 
@@ -57,6 +70,7 @@ The deployment script performs the following steps:
 - Apache is configured to serve the site with fer.webapps.digital.conf 
 - Default site (000-default.conf) is disabled
 - All static content is configured to be properly accessible
+- If accessing locally, use http://localhost:8080
 
 ## Camera Access
 

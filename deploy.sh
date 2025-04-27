@@ -45,6 +45,23 @@ echo "Setting proper permissions for static files..."
 docker-compose exec web chmod -R 755 /app/static /app/staticfiles /app/media /app/upload
 docker-compose exec web chown -R www-data:www-data /app/static /app/staticfiles /app/media /app/upload /app/db.sqlite3
 
+# Fix permissions on the wsgi.py file
+echo "Setting proper permissions for wsgi.py..."
+docker-compose exec web chmod 755 /app/django_face_recog/wsgi.py
+docker-compose exec web chown www-data:www-data /app/django_face_recog/wsgi.py
+
+# Check Apache error logs
+echo "Checking Apache error logs for issues..."
+docker-compose exec web cat /var/log/apache2/error.log | tail -n 50
+
 echo "Django application deployed successfully!"
 echo "Access your site at http://fer.webapps.digital"
-echo "If accessing directly via IP or localhost, use port 8080: http://localhost:8080" 
+echo "If accessing directly via IP or localhost, use port 8080: http://localhost:8080"
+
+# Provide debugging tips
+echo ""
+echo "If you're experiencing 'Internal Server Error', try these debugging steps:"
+echo "1. Check Apache logs in detail: docker-compose exec web cat /var/log/apache2/error.log"
+echo "2. Check Django app logs: docker-compose exec web cat /var/log/apache2/access.log"
+echo "3. Restart Apache: docker-compose exec web service apache2 restart"
+echo "4. Check file permissions: docker-compose exec web ls -la /app/django_face_recog/" 
