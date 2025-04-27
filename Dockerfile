@@ -33,14 +33,18 @@ RUN python manage.py collectstatic --noinput
 
 # Setup Apache configuration
 COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
+COPY apache/django.conf /etc/apache2/sites-available/fer.conf
+
+# Create necessary directories
+RUN mkdir -p /app/media /app/staticfiles
 
 # Set permissions for media and static directories
-RUN mkdir -p /app/media && \
-    chmod -R 755 /app/static /app/staticfiles /app/media /app/upload && \
+RUN chmod -R 755 /app/static /app/staticfiles /app/media /app/upload && \
     chown -R www-data:www-data /app/static /app/staticfiles /app/media /app/upload /app/db.sqlite3
 
-# Enable necessary Apache modules
-RUN a2enmod wsgi headers rewrite
+# Enable necessary Apache modules and sites
+RUN a2enmod wsgi headers rewrite && \
+    a2ensite fer.conf
 
 # Expose port
 EXPOSE 80

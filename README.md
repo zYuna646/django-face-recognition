@@ -27,6 +27,16 @@ This application is dockerized for easy deployment using Apache with WSGI.
    ./deploy.sh
    ```
 
+## Deployment Process
+
+The deployment script performs the following steps:
+1. Cleans up Docker resources (removes old containers, volumes, and cache)
+2. Builds the Docker image fresh (no-cache)
+3. Starts the container
+4. Applies database migrations
+5. Configures Apache to serve the site at fer.webapps.digital
+6. Sets proper permissions for static files
+
 ## File Structure
 
 - `Dockerfile`: Defines the container build process
@@ -36,11 +46,13 @@ This application is dockerized for easy deployment using Apache with WSGI.
 
 ## Important Notes
 
-- Static files are served from `/app/staticfiles/`
-- Media files are served from `/app/media/`
-- Upload files are served from `/app/upload/`
+- Static files are served from `/app/staticfiles/` with proper permissions
+- Media files are served from `/app/media/` with proper permissions
+- Upload files are served from `/app/upload/` with proper permissions
 - Database is SQLite3 located at `/app/db.sqlite3`
 - The application uses a Python virtual environment at `/opt/venv/`
+- Apache is configured to serve the site at fer.webapps.digital
+- All static content is configured to be properly accessible
 
 ## Camera Access
 
