@@ -33,7 +33,7 @@ RUN python manage.py collectstatic --noinput
 
 # Setup Apache configuration
 COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
-COPY apache/django.conf /etc/apache2/sites-available/fer.conf
+COPY apache/django.conf /etc/apache2/sites-available/fer.webapps.digital.conf
 
 # Create necessary directories
 RUN mkdir -p /app/media /app/staticfiles
@@ -44,7 +44,8 @@ RUN chmod -R 755 /app/static /app/staticfiles /app/media /app/upload && \
 
 # Enable necessary Apache modules and sites
 RUN a2enmod wsgi headers rewrite && \
-    a2ensite fer.conf
+    a2dissite 000-default.conf && \
+    a2ensite fer.webapps.digital.conf
 
 # Expose port
 EXPOSE 80

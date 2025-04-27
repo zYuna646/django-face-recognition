@@ -18,10 +18,11 @@ docker-compose exec web python manage.py migrate
 # Create a superuser if needed (uncomment if necessary)
 # docker-compose exec web python manage.py createsuperuser
 
-# Copy Apache configuration to proper location
+# Copy Apache configuration to proper location with correct naming
 echo "Setting up Apache configuration..."
-docker-compose exec web cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/fer.conf
-docker-compose exec web a2ensite fer.conf
+docker-compose exec web cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
+docker-compose exec web a2dissite 000-default.conf
+docker-compose exec web a2ensite fer.webapps.digital.conf
 docker-compose exec web service apache2 reload
 
 # Ensure static files have proper permissions

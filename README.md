@@ -35,13 +35,16 @@ The deployment script performs the following steps:
 3. Starts the container
 4. Applies database migrations
 5. Configures Apache to serve the site at fer.webapps.digital
+   - Creates Apache config file named `fer.webapps.digital.conf`
+   - Disables the default site
+   - Enables the new site
 6. Sets proper permissions for static files
 
 ## File Structure
 
 - `Dockerfile`: Defines the container build process
 - `docker-compose.yml`: Defines the services and environment
-- `apache/django.conf`: Apache virtual host configuration
+- `apache/django.conf`: Apache virtual host configuration template
 - `deploy.sh`: Deployment helper script
 
 ## Important Notes
@@ -51,7 +54,8 @@ The deployment script performs the following steps:
 - Upload files are served from `/app/upload/` with proper permissions
 - Database is SQLite3 located at `/app/db.sqlite3`
 - The application uses a Python virtual environment at `/opt/venv/`
-- Apache is configured to serve the site at fer.webapps.digital
+- Apache is configured to serve the site with fer.webapps.digital.conf 
+- Default site (000-default.conf) is disabled
 - All static content is configured to be properly accessible
 
 ## Camera Access
