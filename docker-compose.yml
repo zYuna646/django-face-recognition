@@ -8,12 +8,14 @@ services:
       - "8080:3500"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3:rw
-      - ./static:/app/staticfiles
-      - ./upload:/app/media
+      - ./static:/app/static  # Volume untuk source files
+      - ./staticfiles:/app/staticfiles  # Volume untuk compiled files
+      - ./media:/app/media
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
       - SQLITE_DB_PATH=/app/db.sqlite3
+      - ALLOWED_HOSTS=localhost,127.0.0.1,fer.webapps.digital
     networks:
       - app-network
     user: "root"
