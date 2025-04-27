@@ -46,6 +46,9 @@ fi' > /fix_wsgi.sh && chmod +x /fix_wsgi.sh
 COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
 COPY apache/django.conf /etc/apache2/sites-available/fer.webapps.digital.conf
 
+# Remove default Apache welcome page
+RUN rm -f /var/www/html/index.html
+
 # Create necessary directories
 RUN mkdir -p /app/media /app/staticfiles
 
@@ -66,15 +69,28 @@ RUN a2enmod wsgi headers rewrite && \
     a2dissite 000-default.conf && \
     a2ensite fer.webapps.digital.conf
 
-# Set up startup script
+# Set up startup script with additional checks
 RUN echo '#!/bin/bash\n\
+echo "Running startup script..."\n\
 /fix_wsgi.sh\n\
+\n\
+# Remove default Apache welcome page\n\
+rm -f /var/www/html/index.html\n\
+\n\
 # Fix permissions for SQLite database\n\
 mkdir -p $(dirname /app/db.sqlite3)\n\
 touch /app/db.sqlite3\n\
 chown www-data:www-data /app/db.sqlite3\n\
 chmod 664 /app/db.sqlite3\n\
-# Start Apache\n\
+\n\
+# Check Apache configuration\n\
+echo "Testing Apache configuration..."\n\
+apache2ctl configtest\n\
+\n\
+# Restart Apache cleanly\n\
+echo "Starting Apache..."\n\
+apache2ctl stop || true\n\
+sleep 2\n\
 apache2ctl -D FOREGROUND' > /start.sh && chmod +x /start.sh
 
 # Expose port

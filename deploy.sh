@@ -26,6 +26,10 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Ensure Apache default page is removed
+echo "Removing Apache default page..."
+docker-compose exec web rm -f /var/www/html/index.html
+
 # Apply migrations
 echo "Applying database migrations..."
 docker-compose exec web python manage.py migrate
@@ -38,7 +42,8 @@ echo "Setting up Apache configuration..."
 docker-compose exec web cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
 docker-compose exec web a2dissite 000-default.conf
 docker-compose exec web a2ensite fer.webapps.digital.conf
-docker-compose exec web service apache2 reload
+docker-compose exec web apache2ctl configtest
+docker-compose exec web service apache2 restart
 
 # Ensure static files have proper permissions
 echo "Setting proper permissions for static files..."
@@ -52,7 +57,11 @@ docker-compose exec web chown www-data:www-data /app/django_face_recog/wsgi.py
 
 # Check Apache error logs
 echo "Checking Apache error logs for issues..."
-docker-compose exec web cat /var/log/apache2/error.log | tail -n 50
+docker-compose exec web cat /var/log/apache2/error.log | tail -n 20
+
+# Verify Apache is serving our application, not default page
+echo "Verifying Apache configuration..."
+docker-compose exec web curl -s "http://localhost/" | grep -q "Django" && echo "SUCCESS: Django application is responding!" || echo "WARNING: Django application not detected in response"
 
 echo "Django application deployed successfully!"
 echo "Access your site at http://fer.webapps.digital"
@@ -60,8 +69,8 @@ echo "If accessing directly via IP or localhost, use port 8080: http://localhost
 
 # Provide debugging tips
 echo ""
-echo "If you're experiencing 'Internal Server Error', try these debugging steps:"
-echo "1. Check Apache logs in detail: docker-compose exec web cat /var/log/apache2/error.log"
-echo "2. Check Django app logs: docker-compose exec web cat /var/log/apache2/access.log"
-echo "3. Restart Apache: docker-compose exec web service apache2 restart"
-echo "4. Check file permissions: docker-compose exec web ls -la /app/django_face_recog/" 
+echo "If you're experiencing issues, try these debugging steps:"
+echo "1. Run the fix_apache.sh script: ./fix_apache.sh"
+echo "2. Run the debug.sh script: ./debug.sh"
+echo "3. Check Apache logs: docker-compose exec web cat /var/log/apache2/error.log"
+echo "4. Restart Apache: docker-compose exec web service apache2 restart" 
