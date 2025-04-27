@@ -8,6 +8,7 @@ services:
       - "8080:3500"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3:rw
+      - ./static:/app/static:rw
       - ./static:/app/staticfiles:rw
       - ./upload:/app/media:rw
     environment:
@@ -17,6 +18,12 @@ services:
     networks:
       - app-network
     user: "root"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3500/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   app-network:
