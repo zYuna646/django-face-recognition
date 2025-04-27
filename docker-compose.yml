@@ -5,7 +5,7 @@ services:
     build: .
     restart: always
     ports:
-      - "8080:80"
+      - "8080:3500"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3:rw
       - ./static:/app/staticfiles

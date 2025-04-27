@@ -2,49 +2,51 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies including Apache and mod_wsgi
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
     libxrender1 \
     libxext6 \
-    apache2 \
-    apache2-dev \
-    apache2-utils \
-    apache2-bin \
-    gcc \
-    openssl \
-    ssl-cert \
-    mime-support \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
-
-# Verify Apache modules directory
-RUN ls -la /usr/lib/apache2/modules/
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install mod_wsgi
+RUN pip install gunicorn
 
 # Copy project files
 COPY . .
 
-# Install mod_wsgi
-RUN mod_wsgi-express install-module
-
-# Make entrypoint script executable
-RUN chmod +x /app/docker-entrypoint/entrypoint.sh
-
 # Create required directories
 RUN mkdir -p /app/staticfiles /app/media
 
-# Expose both HTTP and HTTPS ports
-EXPOSE 80 443
+# Create simple entrypoint script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Make sure the SQLite database file exists and has proper permissions\n\
+echo "Setting up SQLite database..."\n\
+touch /app/db.sqlite3\n\
+chmod 666 /app/db.sqlite3\n\
+\n\
+# Collect static files\n\
+echo "Collecting static files..."\n\
+python manage.py collectstatic --noinput\n\
+\n\
+# Apply database migrations\n\
+echo "Applying database migrations..."\n\
+python manage.py migrate --noinput\n\
+\n\
+# Start Django\n\
+echo "Starting Django server..."\n\
+exec gunicorn django_face_recog.wsgi:application --bind 0.0.0.0:3500\n\
+' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
-# Create a non-root user
-RUN useradd -m appuser
-RUN chown -R appuser:appuser /app
+# Expose the port Gunicorn runs on
+EXPOSE 3500
 
-# Use our entrypoint script
-ENTRYPOINT ["/app/docker-entrypoint/entrypoint.sh"] 
+# Use our new entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"] 

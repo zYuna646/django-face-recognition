@@ -34,14 +34,24 @@ if User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 "
 fi
 
+# Debug environment
+echo "Checking system environment..."
+df -h
+netstat -tulpn
+ps -ef
+
 # Install required Apache modules if they're missing
 echo "Checking and installing Apache modules..."
-apt-get update && apt-get install -y --no-install-recommends apache2-bin
+apt-get update && apt-get install -y --no-install-recommends apache2-bin procps net-tools lsof
 
 # Make sure there are no stale Apache processes
 echo "Stopping any running Apache process..."
 pkill apache2 || true
 rm -f /var/run/apache2/apache2.pid || true
+
+# Check for any process using port 80
+echo "Checking for processes using port 80..."
+lsof -i :80 || true
 
 # Properly configure mod_wsgi for Apache
 echo "Configuring mod_wsgi for Apache..."
@@ -90,10 +100,10 @@ LoadModule mpm_prefork_module /usr/lib/apache2/modules/mod_mpm_prefork.so
 
 # Worker configuration
 <IfModule mpm_prefork_module>
-    StartServers          5
-    MinSpareServers       5
-    MaxSpareServers      10
-    MaxRequestWorkers    150
+    StartServers          2
+    MinSpareServers       2
+    MaxSpareServers       5
+    MaxRequestWorkers     10
     MaxConnectionsPerChild  0
 </IfModule>
 
@@ -114,7 +124,7 @@ AddType text/javascript .js
 
 # Logging configuration
 ErrorLog /var/log/apache2/error.log
-LogLevel warn
+LogLevel debug
 LogFormat "%h %l %u %t \"%r\" %>s %b" common
 CustomLog /var/log/apache2/access.log common
 
@@ -125,8 +135,10 @@ Listen 80
 IncludeOptional /etc/apache2/sites-enabled/*.conf
 EOL
 
-# Make sure log directory exists
+# Make sure log directory exists with proper permissions
+echo "Setting up log directory..."
 mkdir -p /var/log/apache2
+chmod -R 777 /var/log/apache2
 
 # Enable required Apache modules
 echo "Enabling Apache modules..."
@@ -134,19 +146,31 @@ a2enmod rewrite
 
 # Copy our virtual host configuration
 echo "Setting up virtual host configuration..."
-cp /app/apache-conf/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
+cp /app/apache-conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Disable default config and enable our site
-a2dissite 000-default || true
-a2ensite fer.webapps.digital
+# Enable our site
+a2dissite * || true
+a2ensite 000-default
 
-# Make sure /var/run/apache2 exists
+# Make sure /var/run/apache2 exists with proper permissions
+echo "Setting up run directory..."
 mkdir -p /var/run/apache2
+chmod -R 777 /var/run/apache2
 
 # Verify Apache configuration
 echo "Verifying Apache configuration..."
 apache2ctl configtest
 
-# Start Apache in foreground
-echo "Starting Apache..."
+# Try to start Apache and check if it's running
+echo "Starting Apache in debug mode..."
+apache2ctl -X &
+sleep 2
+ps -ef | grep apache2
+
+# Check for errors in the error log
+echo "Checking Apache error log:"
+cat /var/log/apache2/error.log
+
+# Now start Apache in foreground
+echo "Starting Apache normally..."
 exec apache2ctl -D FOREGROUND 
