@@ -7,12 +7,12 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
       - ./db.sqlite3:/app/db.sqlite3
+      - ./static:/app/staticfiles
+      - ./upload:/app/media
     environment:
       - DEBUG=False
-      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
     networks:
       - app-network
 
