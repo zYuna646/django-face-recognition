@@ -116,21 +116,9 @@ CustomLog /var/log/apache2/access.log common
 IncludeOptional /etc/apache2/sites-enabled/*.conf
 EOL
 
-# Enable other required modules
+# Enable required Apache modules
 echo "Enabling other Apache modules..."
-a2enmod ssl
-a2enmod socache_shmcb
 a2enmod rewrite
-
-# Create self-signed certificate if not exists
-if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]; then
-    echo "Creating self-signed SSL certificate..."
-    mkdir -p /etc/ssl/private /etc/ssl/certs
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
-        -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
-        -subj "/CN=fer.webapps.digital"
-fi
 
 # Copy our virtual host configuration
 echo "Setting up virtual host configuration..."
