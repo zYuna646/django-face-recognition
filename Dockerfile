@@ -12,11 +12,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apache2 \
     apache2-dev \
     apache2-utils \
+    apache2-bin \
     gcc \
     openssl \
     ssl-cert \
     mime-support \
     && rm -rf /var/lib/apt/lists/*
+
+# Verify Apache modules directory
+RUN ls -la /usr/lib/apache2/modules/
 
 # Copy requirements first for better caching
 COPY requirements.txt .

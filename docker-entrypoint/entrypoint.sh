@@ -34,6 +34,10 @@ if User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
 "
 fi
 
+# Install required Apache modules if they're missing
+echo "Checking and installing Apache modules..."
+apt-get update && apt-get install -y --no-install-recommends apache2-bin
+
 # Properly configure mod_wsgi for Apache
 echo "Configuring mod_wsgi for Apache..."
 # Find the actual mod_wsgi path
@@ -61,13 +65,59 @@ else
     exit 1
 fi
 
-# Enable required Apache modules
-echo "Enabling Apache modules..."
-# Disable conflicting MPM modules first
-a2dismod mpm_event
-a2dismod mpm_worker
-# Now enable prefork
-a2enmod mpm_prefork
+# Check if MPM modules exist
+echo "Checking Apache MPM modules..."
+ls -la /usr/lib/apache2/modules/mod_mpm*
+
+# Replace the apache2.conf with a simplified version to avoid MPM issues
+echo "Creating simplified Apache configuration..."
+cat > /etc/apache2/apache2.conf << 'EOL'
+# Global configuration
+ServerRoot "/etc/apache2"
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+
+# Load MPM Prefork directly
+LoadModule mpm_prefork_module /usr/lib/apache2/modules/mod_mpm_prefork.so
+
+# Worker configuration
+<IfModule mpm_prefork_module>
+    StartServers          5
+    MinSpareServers       5
+    MaxSpareServers      10
+    MaxRequestWorkers    150
+    MaxConnectionsPerChild  0
+</IfModule>
+
+# Core modules
+LoadModule authz_core_module /usr/lib/apache2/modules/mod_authz_core.so
+LoadModule dir_module /usr/lib/apache2/modules/mod_dir.so
+LoadModule mime_module /usr/lib/apache2/modules/mod_mime.so
+LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so
+LoadModule alias_module /usr/lib/apache2/modules/mod_alias.so
+LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
+
+# Default MIME types
+AddType application/x-compress .Z
+AddType application/x-gzip .gz .tgz
+AddType text/html .html .htm
+AddType text/css .css
+AddType text/javascript .js
+
+# Logging configuration
+ErrorLog /var/log/apache2/error.log
+LogLevel warn
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+CustomLog /var/log/apache2/access.log common
+
+# Virtual hosts
+IncludeOptional /etc/apache2/sites-enabled/*.conf
+EOL
+
+# Enable other required modules
+echo "Enabling other Apache modules..."
 a2enmod ssl
 a2enmod socache_shmcb
 a2enmod rewrite
@@ -82,9 +132,8 @@ if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]; then
         -subj "/CN=fer.webapps.digital"
 fi
 
-# Copy Apache configuration correctly to standard locations
-echo "Setting up Apache configuration..."
-cp /app/apache-conf/apache2.conf /etc/apache2/apache2.conf
+# Copy our virtual host configuration
+echo "Setting up virtual host configuration..."
 cp /app/apache-conf/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
 
 # Disable default config and enable our site
