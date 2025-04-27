@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxext6 \
     apache2 \
     apache2-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -21,15 +22,22 @@ RUN pip install mod_wsgi
 # Copy project files
 COPY . .
 
-# Install mod_wsgi but don't configure Apache
+# Install and configure mod_wsgi properly
 RUN mod_wsgi-express install-module
-# Create a symlink for the module to be recognized by a2enmod
-RUN ln -s /usr/lib/apache2/modules/mod_wsgi-py*.so /usr/lib/apache2/modules/mod_wsgi.so
-# Now enable the module
+# Create mod_wsgi load configuration
+RUN echo "LoadModule wsgi_module $(find /usr/local/lib -name 'mod_wsgi*.so')" > /etc/apache2/mods-available/wsgi.load
+# Enable the module
 RUN a2enmod wsgi || echo "Module not found, continuing anyway"
+
+# Copy Apache configuration
+COPY apache-conf/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY apache-conf/apache2.conf /etc/apache2/apache2.conf
 
 # Make entrypoint script executable
 RUN chmod +x /app/docker-entrypoint/entrypoint.sh
+
+# Create required directories
+RUN mkdir -p /app/staticfiles /app/media
 
 # Expose the port Apache runs on
 EXPOSE 80
