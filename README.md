@@ -1,98 +1,80 @@
-# Django Face Recognition Application
+# Django Face Recognition Application with Apache and Docker
 
-Aplikasi pengenalan wajah menggunakan Django dan TensorFlow.
+This repository contains a Django application for face recognition with a Docker setup using Apache as the web server.
 
-## Persiapan Deployment
+## Environment Setup
 
-### 1. Clone Repository
+The application is configured to be hosted at `http://fer.webapps.digital/` using Apache.
 
-```bash
-git clone <repository-url>
-cd django-face-recognition
-```
+## Features
 
-### 2. Siapkan Direktori dan Izin
+- Uses virtual environment inside Docker for Python dependencies
+- Uses SQLite database
+- Apache web server configuration
+- Properly configured camera and upload permissions
+- Static files served by Apache
 
-```bash
-# Buat direktori yang diperlukan
-mkdir -p static/CACHE/css static/img static/js static/models static/src upload
+## Getting Started
 
-# Atur izin
-chmod -R 755 static upload
-```
+### Prerequisites
 
-### 3. Build dan Jalankan Docker Container
+- Docker and Docker Compose installed on your system
+- Domain name pointed to your server IP (fer.webapps.digital)
 
-```bash
-# Build dan jalankan container
-docker-compose up -d --build
-```
+### Installation and Setup
 
-### 4. Konfigurasi Apache
+1. Clone this repository:
+   ```
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-```bash
-# Salin file konfigurasi Apache
-cp apache-conf/000-default.conf /etc/apache2/sites-available/fer.webapps.digital.conf
-cp apache-conf/apache2.conf /etc/apache2/conf-available/fer.conf
+2. Build and start the Docker containers:
+   ```
+   docker-compose up -d
+   ```
 
-# Aktifkan konfigurasi
-a2ensite fer.webapps.digital.conf
-a2enconf fer.conf
-a2enmod proxy proxy_http headers
-systemctl restart apache2
-```
+3. Access the application at http://fer.webapps.digital/
 
-### 5. Siapkan Script Pemeliharaan
+## Configuration
 
-```bash
-# Salin script pemeliharaan
-cp docker-entrypoint/maintain-static.sh /usr/local/bin/
-chmod +x /usr/local/bin/maintain-static.sh
-```
+### Environment Variables
 
-### 6. Setelah Container Restart
+You can modify the following environment variables in the `docker-compose.yml` file:
 
-Jika container di-restart dan file static hilang, jalankan:
+- `DEBUG`: Set to `False` for production
+- `ALLOWED_HOSTS`: Comma-separated list of allowed hosts
+- `SECRET_KEY`: Django secret key
+- `SQLITE_DB_PATH`: Path to SQLite database
 
-```bash
-/usr/local/bin/maintain-static.sh
-```
+## Directory Structure
+
+- `/app`: Root directory of the Django application
+- `/app/static`: Static files
+- `/app/media`: Media files
+- `/app/upload`: Upload directory for files
+
+## Camera Permissions
+
+The application has been configured to allow camera access through:
+- Custom Content Security Policy (CSP) headers
+- Apache configuration for CORS
+
+## Database
+
+The application uses SQLite database which is stored in the root directory as `db.sqlite3`. This file is mounted as a volume in the Docker container to ensure data persistence.
+
+## Static Files
+
+Static files are collected during the Docker build process and served by Apache from the `/app/staticfiles` directory.
 
 ## Troubleshooting
 
-### Masalah Static Files
+If you encounter issues with camera access or file uploads, check:
+1. Apache logs: `/var/log/apache2/error.log` inside the container
+2. Make sure the permissions are set correctly for upload and media directories
+3. Verify that the CSP headers are correctly configured in Django settings and Apache
 
-Periksa log Apache:
-```bash
-tail -n 50 /var/log/apache2/error.log
-```
+## License
 
-Periksa izin direktori:
-```bash
-ls -la static/
-ls -la static/CACHE/css/
-```
-
-Jalankan script pemeliharaan:
-```bash
-/usr/local/bin/maintain-static.sh
-```
-
-### Masalah Upload Gambar
-
-Pastikan direktori upload memiliki izin yang benar:
-```bash
-chmod -R 755 upload/
-chown -R www-data:www-data upload/
-```
-
-## Struktur Volume
-
-- `static`: direktori untuk file static (CSS, JS, gambar)
-- `upload`: direktori untuk file media yang diunggah pengguna
-- `db.sqlite3`: file database
-
-Volume ini di-mount ke container Docker:
-- `./static:/app/static:rw`
-- `./static:/app/staticfiles:rw`
-- `./upload:/app/media:rw` 
+[Specify your license here] 

@@ -1,65 +1,56 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-WORKDIR /app
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV VIRTUAL_ENV=/opt/venv
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxrender1 \
-    libxext6 \
-    netcat-openbsd \
-    curl \
+    build-essential \
+    libopencv-dev \
+    python3-opencv \
+    apache2 \
+    libapache2-mod-wsgi-py3 \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Create and activate virtual environment
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements file
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn django-csp django-compressor
+
+# Install Python dependencies in the virtual environment
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # Copy project files
 COPY . .
 
-# Create required directories and set permissions
-RUN mkdir -p /app/staticfiles /app/static /app/media /app/static/CACHE/css
-RUN chmod -R 755 /app/staticfiles /app/static /app/media
-RUN touch /app/static/CACHE/css/output.53e39e3c3985.css
-RUN chmod 644 /app/static/CACHE/css/output.53e39e3c3985.css
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Create simple entrypoint script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-\n\
-# Make sure the SQLite database file exists and has proper permissions\n\
-echo "Setting up SQLite database..."\n\
-touch /app/db.sqlite3\n\
-chmod 666 /app/db.sqlite3\n\
-\n\
-# Create necessary directories with proper permissions\n\
-echo "Setting up directories..."\n\
-mkdir -p /app/staticfiles /app/static /app/media /app/static/CACHE/css\n\
-chmod -R 755 /app/staticfiles /app/static /app/media\n\
-\n\
-# Collect static files\n\
-echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput --clear\n\
-\n\
-# Compress CSS\n\
-echo "Compressing CSS..."\n\
-python manage.py compress --force\n\
-\n\
-# Apply database migrations\n\
-echo "Applying database migrations..."\n\
-python manage.py migrate --noinput\n\
-\n\
-# Start Django with debug logging\n\
-echo "Starting Django server..."\n\
-exec gunicorn django_face_recog.wsgi:application --bind 0.0.0.0:3500 --log-level debug\n\
-' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# Create media directory with correct permissions
+RUN mkdir -p /app/media && chmod 755 /app/media
+RUN mkdir -p /app/upload && chmod 755 /app/upload
 
-# Expose the port Gunicorn runs on
-EXPOSE 3500
+# Expose port for Apache
+EXPOSE 80
 
-# Use our new entrypoint script
-ENTRYPOINT ["/app/entrypoint.sh"] 
+# Copy the Apache configuration file
+COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+# Enable required Apache modules
+RUN a2enmod wsgi
+RUN a2enmod headers
+
+# Set permissions for Apache
+RUN chown -R www-data:www-data /app
+
+# Use Apache as the entrypoint
+CMD ["apache2ctl", "-D", "FOREGROUND"] 

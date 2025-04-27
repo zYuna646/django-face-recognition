@@ -25,8 +25,10 @@ var/
 *.pot
 *.pyc
 local_settings.py
-db.sqlite3
-media
+# Don't exclude db.sqlite3 as we need it
+# db.sqlite3
+# Don't exclude media as we need it 
+# media
 
 # Virtual Environment
 venv/
@@ -40,15 +42,22 @@ ENV/
 *.swo
 
 # Docker
-.dockerignore
-Dockerfile
+# Keep Docker files for reference
+# .dockerignore
+# Dockerfile
 
 # Git
 .git/
 .gitignore
 
-# User uploaded content (if stored locally)
-/media/uploads/
+# User uploaded content
+# We need to keep the directories but not the content
+# /media/uploads/
 
 # Any other large files or directories not needed in the container
-node_modules/ 
+node_modules/
+
+# Don't exclude these important directories
+!static/
+!media/
+!upload/ 

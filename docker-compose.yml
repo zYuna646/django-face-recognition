@@ -3,32 +3,17 @@ version: '3.8'
 services:
   web:
     build: .
+    container_name: django-face-app
     restart: always
     ports:
-      - "8080:3500"
+      - "80:80"
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3:rw
-      - ./static:/app/static:rw
-      - ./static:/app/staticfiles:rw
-      - ./upload:/app/media:rw
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./static:/app/static
+      - ./media:/app/media
+      - ./upload:/app/upload
     environment:
-      - DEBUG=True
-      - SECRET_KEY=${SECRET_KEY:-default_dev_secret_key}
-      - SQLITE_DB_PATH=/app/db.sqlite3
-    networks:
-      - app-network
-    user: "root"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3500/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  static_volume:
-  media_volume: 
+      - DEBUG=False
+      - ALLOWED_HOSTS=fer.webapps.digital,localhost,127.0.0.1
+      - SECRET_KEY=your-secret-key-here-replace-this
+      - SQLITE_DB_PATH=/app/db.sqlite3 

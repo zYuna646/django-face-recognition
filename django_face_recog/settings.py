@@ -23,11 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-n9s8x+#0=lr((x5gq#=z2_dt)obh19i#)^q@4bu$8ljyhdq5s(")
 
-# Temporarily enable DEBUG for troubleshooting
-DEBUG = True
+# DEBUG mode from environment variable
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-# Allow detailed error info to be displayed
-ALLOWED_HOSTS = ['*']
+# Allow hosts from environment variable
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -145,16 +145,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Tambahkan security headers untuk mengizinkan akses kamera
+# Security settings for camera and media access
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
 
-# Tambahkan konfigurasi berikut di akhir file
+# Content Security Policy for camera access
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "'unsafe-eval'")
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'", "data:", "blob:")
 CSP_MEDIA_SRC = ("'self'", "data:", "blob:")
-CSP_CONNECT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'", "blob:")
 CSP_WORKER_SRC = ("'self'", "blob:")
-CSP_FRAME_SRC = ("'self'",)
+CSP_FRAME_SRC = ("'self'", "blob:")
+CSP_FORM_ACTION = ("'self'",)
+CSP_INCLUDE_NONCE_IN = ('script-src',)
+CSP_REPORT_ONLY = False
