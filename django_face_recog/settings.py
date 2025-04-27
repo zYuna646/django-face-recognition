@@ -149,7 +149,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True  # Komentar atau hapus ini untuk mencegah pengalihan ke HTTPS
     SECURE_HSTS_SECONDS = 31536000  # 1 tahun
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
@@ -160,7 +160,10 @@ else:
     # Untuk pengembangan lokal, izinkan HTTP
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
-    SECURE_SSL_REDIRECT = False
+    SECURE_SSL_REDIRECT = False  # Pastikan ini False
+
+# Selalu nonaktifkan pengalihan SSL
+SECURE_SSL_REDIRECT = False
 
 # Cross-Origin settings
 CORS_ALLOW_ALL_ORIGINS = True
