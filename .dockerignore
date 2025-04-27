@@ -11,10 +11,11 @@ env/
 venv/
 ENV/
 node_modules/
-package-lock.json
-package.json
-tailwind.config.js
+# We need these for static files
+# package-lock.json
+# package.json
+# tailwind.config.js
 .dockerignore
-Dockerfile
+# db.sqlite3 - We need this
 docker-compose.yml
-README.md 
+# README.md 
