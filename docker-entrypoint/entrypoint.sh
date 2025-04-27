@@ -61,10 +61,12 @@ else
     exit 1
 fi
 
-# Enable SSL module
-echo "Enabling SSL module for Apache..."
+# Enable required Apache modules
+echo "Enabling Apache modules..."
+a2enmod mpm_prefork  # Enable MPM Prefork module
 a2enmod ssl
 a2enmod socache_shmcb
+a2enmod rewrite
 
 # Create self-signed certificate if not exists
 if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]; then
