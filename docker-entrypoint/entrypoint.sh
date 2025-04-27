@@ -38,6 +38,11 @@ fi
 echo "Checking and installing Apache modules..."
 apt-get update && apt-get install -y --no-install-recommends apache2-bin
 
+# Make sure there are no stale Apache processes
+echo "Stopping any running Apache process..."
+pkill apache2 || true
+rm -f /var/run/apache2/apache2.pid || true
+
 # Properly configure mod_wsgi for Apache
 echo "Configuring mod_wsgi for Apache..."
 # Find the actual mod_wsgi path
@@ -74,6 +79,7 @@ echo "Creating simplified Apache configuration..."
 cat > /etc/apache2/apache2.conf << 'EOL'
 # Global configuration
 ServerRoot "/etc/apache2"
+ServerName localhost
 Timeout 300
 KeepAlive On
 MaxKeepAliveRequests 100
@@ -112,12 +118,18 @@ LogLevel warn
 LogFormat "%h %l %u %t \"%r\" %>s %b" common
 CustomLog /var/log/apache2/access.log common
 
+# Listen directive
+Listen 80
+
 # Virtual hosts
 IncludeOptional /etc/apache2/sites-enabled/*.conf
 EOL
 
+# Make sure log directory exists
+mkdir -p /var/log/apache2
+
 # Enable required Apache modules
-echo "Enabling other Apache modules..."
+echo "Enabling Apache modules..."
 a2enmod rewrite
 
 # Copy our virtual host configuration
@@ -127,6 +139,9 @@ cp /app/apache-conf/000-default.conf /etc/apache2/sites-available/fer.webapps.di
 # Disable default config and enable our site
 a2dissite 000-default || true
 a2ensite fer.webapps.digital
+
+# Make sure /var/run/apache2 exists
+mkdir -p /var/run/apache2
 
 # Verify Apache configuration
 echo "Verifying Apache configuration..."
