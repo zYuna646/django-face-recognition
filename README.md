@@ -34,7 +34,7 @@ The application is configured to be hosted at `http://fer.webapps.digital/` usin
    docker-compose up -d
    ```
 
-3. Access the application at http://fer.webapps.digital/
+3. Access the application at http://fer.webapps.digital:8080/ or http://localhost:8080/
 
 ## Configuration
 
@@ -74,6 +74,10 @@ If you encounter issues with camera access or file uploads, check:
 1. Apache logs: `/var/log/apache2/error.log` inside the container
 2. Make sure the permissions are set correctly for upload and media directories
 3. Verify that the CSP headers are correctly configured in Django settings and Apache
+
+## Port Configuration
+
+The application is configured to run on port 8080 to avoid conflicts with other services that might be using port 80. If you need to change this port, modify the `ports` section in your `docker-compose.yml` file.
 
 ## License
 

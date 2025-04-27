@@ -9,7 +9,7 @@ services:
     container_name: django-face-app
     restart: always
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
       - ./static:/app/static
