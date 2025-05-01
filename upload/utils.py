@@ -6,11 +6,11 @@ from tensorflow.keras.models import load_model
 def predict_image(image, action):
     # Pilih model berdasarkan action
     if action == 'ck':
-        model_path = 'static/models/ck+_FaceExpNet_model.h5'
+        model_path = 'static/models/ck+_FaceExpNet_model.keras'
         target_size = (48, 48)
         grayscale = True
     elif action == 'fer':
-        model_path = 'static/models/fer2013_resmasking_model.h5'
+        model_path = 'static/models/fer2013_resmasking_model.keras'
         target_size = (48, 48)
         grayscale = False
     else:
