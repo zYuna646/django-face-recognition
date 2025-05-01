@@ -3,20 +3,16 @@ version: '3'
 services:
   web:
     build: .
-    ports:
-      - "8080:8080"
+    restart: always
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
-      - ./media:/app/media
       - ./static:/app/static
+      - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
     environment:
-      - DEBUG=True
-      - SECRET_KEY=your_secret_key_here
-      - ALLOWED_HOSTS=localhost,127.0.0.1,fer.webapps.digital
-      - SQLITE_DB_PATH=/app/db.sqlite3
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3 
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-n9s8x+#0=lr((x5gq#=z2_dt)obh19i#)^q@4bu$8ljyhdq5s(}
+      - DEBUG=${DEBUG:-False}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,fer.zyuna646.tech}
+    ports:
+      - "8000:8000"
+    command: gunicorn --workers 3 --bind 0.0.0.0:8000 django_face_recog.wsgi:application 

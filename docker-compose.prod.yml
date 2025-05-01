@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    restart: always
+    container_name: django_face_recognition
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./media:/app/media
+      # Keep static files inside the container
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-n9s8x+#0=lr((x5gq#=z2_dt)obh19i#)^q@4bu$8ljyhdq5s(}
+      - DEBUG=${DEBUG:-False}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,fer.zyuna646.tech}
+      - STATIC_ROOT=/app/staticfiles
+    network_mode: host
+    command: >
+      bash -c "cp -r /app/static/* /app/staticfiles/ &&
+               gunicorn --workers 3 --bind 0.0.0.0:8000 django_face_recog.wsgi:application"
+
+networks:
+  nginx_network:
+    external: true
+    name: nginx_network 
